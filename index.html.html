@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SteFio Driftwood</title>
+    <!-- Font Script Stilizzato e Montserrat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #1a1614;
+            color: #f0e6d2;
+            font-family: 'Montserrat', sans-serif;
+            padding-top: 170px;
+            min-height: 100vh;
+        }
+
+        /* Header Fisso su Asse di Legno */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 150px;
+            z-index: 1000;
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            background: 
+                linear-gradient(90deg, rgba(40,22,12,0.85) 0%, rgba(70,40,20,0.75) 50%, rgba(40,22,12,0.85) 100%),
+                repeating-linear-gradient(0deg, #3d2314, #3d2314 4px, #2c180d 4px, #2c180d 8px, #4a2c1b 8px, #4a2c1b 12px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.8), inset 0 2px 5px rgba(255,255,255,0.1), inset 0 -3px 6px rgba(0,0,0,0.9);
+            border-bottom: 4px solid #1c0e07;
+            padding: 10px 30px;
+        }
+
+        /* Sezione Sinistra dell'Header */
+        .header-left {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        /* Logo miniature in alto a sinistra */
+        .site-logo {
+            height: 90px;
+            width: auto;
+            max-width: 150px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 2px solid #7a4b2a;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.6);
+            cursor: pointer;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .site-logo:hover {
+            transform: scale(1.05);
+            border-color: #d4a359;
+        }
+
+        /* Container centrale del Titolo + Email */
+        .brand-title-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        /* Titolo Inciso Centrato */
+        h1.brand-title {
+            font-family: 'Great Vibes', cursive;
+            font-size: 3.5rem;
+            letter-spacing: 2px;
+            color: #d4a359;
+            text-align: center;
+            line-height: 1.1;
+            text-shadow: 
+                -1px -1px 1px rgba(0, 0, 0, 0.9),
+                 1px  1px 1px rgba(255, 235, 200, 0.2),
+                 2px  3px 5px rgba(0, 0, 0, 1);
+            user-select: none;
+            margin-bottom: 5px;
+        }
+
+        /* Email sotto il titolo Centrata */
+        .brand-email-trigger {
+            font-size: 0.95rem;
+            color: #bfa071;
+            font-weight: 300;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            text-decoration: underline;
+            text-underline-offset: 4px;
+            text-align: center;
+        }
+
+        .brand-email-trigger:hover {
+            color: #f0e6d2;
+            transform: scale(1.05);
+        }
+
+        /* Sezione Destra dell'Header */
+        .header-right {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        /* Pulsante Area Riservata */
+        .admin-toggle-btn {
+            background: #2c180d;
+            color: #d4a359;
+            border: 1px solid #7a4b2a;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .admin-toggle-btn:hover {
+            background: #4a2c1b;
+            color: #fff;
+        }
+
+        /* Container Principale */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Pannello Admin per Inserimento */
+        #admin-panel {
+            display: none;
+            background: #241c18;
+            border: 2px dashed #7a4b2a;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        #admin-panel h2 {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: #d4a359;
+        }
+
+        .upload-form {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .upload-form input[type="file"] {
+            display: none;
+        }
+
+        .file-label {
+            background: #3d2314;
+            color: #f0e6d2;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            border: 1px solid #5a351f;
+        }
+
+        .btn-submit {
+            background: #7a4b2a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-submit:hover {
+            background: #965d35;
+        }
+
+        /* Griglia Galleria Opere */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .card {
+            position: relative;
+            background: #241c18;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(212, 163, 89, 0.2);
+        }
+
+        .card img {
+            width: 100%;
+            height: 380px;
+            object-fit: cover;
+            display: block;
+            cursor: pointer;
+        }
+
+        /* Pulsante Elimina */
+        .delete-btn {
+            display: none;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(180, 40, 40, 0.9);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            z-index: 10;
+            line-height: 35px;
+            text-align: center;
+        }
+
+        .admin-active .delete-btn {
+            display: block;
+        }
+
+        /* Lightbox (Ingrandimento Fullscreen Immagini) */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.92);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .lightbox img {
+            max-width: 90%;
+            max-height: 80vh;
+            object-fit: contain;
+            box-shadow: 0 0 30px rgba(0,0,0,0.8);
+            border: 2px solid #5a351f;
+        }
+
+        /* Email stilizzata sotto l'immagine del Logo ingrandita */
+        .lightbox-email {
+            display: none;
+            font-family: 'Great Vibes', cursive;
+            font-size: 2.8rem;
+            color: #d4a359;
+            margin-top: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.9);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .lightbox-email:hover {
+            color: #f0e6d2;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            color: #f0e6d2;
+            font-size: 2.2rem;
+            cursor: pointer;
+            font-weight: bold;
+            line-height: 1;
+        }
+
+        /* Modale Ingrandimento Email / Contatti */
+        .email-modal, .password-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.88);
+            backdrop-filter: blur(5px);
+            z-index: 2050;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .email-modal-content {
+            background: linear-gradient(135deg, #2c180d 0%, #1a0f08 100%);
+            border: 2px solid #d4a359;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.9);
+            border-radius: 12px;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            max-width: 90%;
+            width: 500px;
+        }
+
+        .info-title {
+            font-family: 'Great Vibes', cursive;
+            font-size: 3rem;
+            color: #d4a359;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+
+        .info-email-large {
+            display: inline-block;
+            font-size: 1.4rem;
+            color: #f0e6d2;
+            text-decoration: none;
+            font-weight: 600;
+            letter-spacing: 1px;
+            border-bottom: 1px dashed #d4a359;
+            padding-bottom: 5px;
+            margin-top: 10px;
+            transition: color 0.3s ease;
+        }
+
+        .info-email-large:hover {
+            color: #d4a359;
+        }
+
+        /* Modale Area Riservata */
+        .wood-modal-content {
+            background: 
+                linear-gradient(90deg, rgba(40,22,12,0.95) 0%, rgba(70,40,20,0.9) 50%, rgba(40,22,12,0.95) 100%),
+                repeating-linear-gradient(0deg, #3d2314, #3d2314 4px, #2c180d 4px, #2c180d 8px, #4a2c1b 8px, #4a2c1b 12px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.9), inset 0 2px 5px rgba(255,255,255,0.1), inset 0 -3px 6px rgba(0,0,0,0.9);
+            border: 4px solid #1c0e07;
+            border-radius: 8px;
+            padding: 35px 25px;
+            text-align: center;
+            position: relative;
+            max-width: 90%;
+            width: 440px;
+        }
+
+        .wood-modal-title {
+            font-family: 'Great Vibes', cursive;
+            font-size: 3.2rem;
+            color: #d4a359;
+            margin-bottom: 20px;
+            text-shadow: 
+                -1px -1px 1px rgba(0, 0, 0, 0.9),
+                 1px  1px 1px rgba(255, 235, 200, 0.2),
+                 2px  3px 5px rgba(0, 0, 0, 1);
+            user-select: none;
+        }
+
+        .password-input {
+            width: 80%;
+            max-width: 260px;
+            padding: 10px 15px;
+            background: #1a0f08;
+            border: 2px solid #7a4b2a;
+            border-radius: 4px;
+            color: #d4a359;
+            font-size: 1.2rem;
+            text-align: center;
+            letter-spacing: 3px;
+            outline: none;
+            margin-bottom: 20px;
+            transition: border-color 0.3s ease;
+        }
+
+        .password-input:focus {
+            border-color: #d4a359;
+        }
+
+        .wood-btn {
+            background: #3d2314;
+            color: #d4a359;
+            border: 1px solid #7a4b2a;
+            padding: 10px 25px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .wood-btn:hover {
+            background: #5a351f;
+            color: #fff;
+        }
+
+        .error-msg {
+            color: #ff6b6b;
+            font-size: 0.85rem;
+            margin-top: 10px;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                display: flex;
+                flex-direction: column;
+                height: auto;
+                padding: 15px;
+                gap: 15px;
+            }
+            .header-left, .header-right {
+                justify-content: center;
+            }
+            h1.brand-title {
+                font-size: 2.5rem;
+            }
+            body {
+                padding-top: 230px;
+            }
+            .lightbox-email {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Fisso su Asse di Legno -->
+    <header>
+        <div class="header-left">
+            <!-- Logo nell'angolo in alto a sinistra -->
+            <img src="Logo.jpg" alt="SteFio Driftwood Logo" class="site-logo" onclick="openLogoLightbox('Logo.jpg')">
+        </div>
+        
+        <div class="brand-title-container">
+            <h1 class="brand-title">SteFio Driftwood</h1>
+            <!-- Email che apre la modale di ingrandimento -->
+            <div class="brand-email-trigger" onclick="openEmailModal()">stefio.driftwood@gmail.com</div>
+        </div>
+
+        <div class="header-right">
+            <button class="admin-toggle-btn" id="admin-btn-label" onclick="handleAdminAccess()">Area Riservata</button>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- Pannello Amministrazione (Aggiunta Immagini) -->
+        <div id="admin-panel">
+            <h2>Gestione Galleria (Modalità Amministratore)</h2>
+            <div class="upload-form">
+                <label for="image-upload" class="file-label">Scegli Immagine</label>
+                <input type="file" id="image-upload" accept="image/*">
+                <span id="file-name-display">Nessun file selezionato</span>
+                <button class="btn-submit" onclick="addNewImage()">Aggiungi alla Galleria</button>
+            </div>
+        </div>
+
+        <!-- Griglia Immagini -->
+        <div class="gallery-grid" id="gallery-grid">
+            <!-- Le immagini inserite o predefinite verranno renderizzate qui -->
+        </div>
+
+    </div>
+
+    <!-- Modale Ingrandimento Email / Informazioni -->
+    <div class="email-modal" id="email-modal" onclick="closeEmailModal(event)">
+        <div class="email-modal-content">
+            <span class="lightbox-close" onclick="forceCloseEmailModal()">&times;</span>
+            <div class="info-title">Per informazioni</div>
+            <a href="mailto:stefio.driftwood@gmail.com" class="info-email-large">stefio.driftwood@gmail.com</a>
+        </div>
+    </div>
+
+    <!-- Modale Area Riservata -->
+    <div class="password-modal" id="password-modal" onclick="closePasswordModal(event)">
+        <div class="wood-modal-content">
+            <span class="lightbox-close" onclick="forceClosePasswordModal()">&times;</span>
+            <div class="wood-modal-title">Inserisci codice</div>
+            <input type="password" id="admin-password-input" class="password-input" placeholder="••••" onkeydown="checkEnterKey(event)">
+            <br>
+            <button class="wood-btn" onclick="submitPassword()">Conferma</button>
+            <div id="password-error" class="error-msg">Codice errato! Riprova.</div>
+        </div>
+    </div>
+
+    <!-- Modale Lightbox Ingrandimento Immagini e Logo -->
+    <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+        <span class="lightbox-close">&times;</span>
+        <img id="lightbox-img" src="" alt="Ingrandimento">
+        <!-- Email stilizzata visibile solo quando viene ingrandito il logo -->
+        <a href="mailto:stefo.driftwood@gmail.com" class="lightbox-email" id="lightbox-email" onclick="event.stopPropagation()">stefo.driftwood@gmail.com</a>
+    </div>
+
+    <script>
+        // Immagini predefinite
+        const defaultImages = [
+            "Gemini_Generated_Image_j7dpnqj7dpnqj7dp_3.png",
+            "Gemini_Generated_Image_m3sbjtm3sbjtm3sb_3.png",
+            "Gemini_Generated_Image_u14n28u14n28u14n_3.png",
+            "Gemini_Generated_Image_twtz3etwtz3etwtz_3.png",
+            "Gemini_Generated_Image_lcifqrlcifqrlcif_3.png",
+            "Gemini_Generated_Image_gwwok6gwwok6gwwo_3.png"
+        ];
+
+        let isAdmin = false;
+
+        // Inizializzazione della galleria da LocalStorage
+        function getGalleryImages() {
+            const saved = localStorage.getItem('stefio_gallery');
+            if (saved) {
+                return JSON.parse(saved);
+            } else {
+                localStorage.setItem('stefio_gallery', JSON.stringify(defaultImages));
+                return defaultImages;
+            }
+        }
+
+        function renderGallery() {
+            const grid = document.getElementById('gallery-grid');
+            const images = getGalleryImages();
+            grid.innerHTML = '';
+
+            images.forEach((src, index) => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                
+                card.innerHTML = `
+                    <button class="delete-btn" onclick="deleteImage(${index})">&times;</button>
+                    <img src="${src}" alt="Opera Driftwood" onclick="openLightbox('${src}')">
+                `;
+                grid.appendChild(card);
+            });
+
+            const btnLabel = document.getElementById('admin-btn-label');
+
+            if (isAdmin) {
+                document.body.classList.add('admin-active');
+                if (btnLabel) btnLabel.textContent = "Esci da Area Riservata";
+            } else {
+                document.body.classList.remove('admin-active');
+                if (btnLabel) btnLabel.textContent = "Area Riservata";
+            }
+        }
+
+        // Gestione Click Pulsante Area Riservata
+        function handleAdminAccess() {
+            if (isAdmin) {
+                isAdmin = false;
+                document.getElementById('admin-panel').style.display = 'none';
+                renderGallery();
+                alert("Uscito dalla modalità amministratore.");
+            } else {
+                openPasswordModal();
+            }
+        }
+
+        // Apertura/Chiusura Modale Codice
+        function openPasswordModal() {
+            const modal = document.getElementById('password-modal');
+            const input = document.getElementById('admin-password-input');
+            const error = document.getElementById('password-error');
+            
+            input.value = '';
+            error.style.display = 'none';
+            modal.style.display = 'flex';
+            setTimeout(() => input.focus(), 100);
+        }
+
+        function closePasswordModal(event) {
+            if (event.target.id === 'password-modal') {
+                document.getElementById('password-modal').style.display = 'none';
+            }
+        }
+
+        function forceClosePasswordModal() {
+            document.getElementById('password-modal').style.display = 'none';
+        }
+
+        function checkEnterKey(event) {
+            if (event.key === 'Enter') {
+                submitPassword();
+            }
+        }
+
+        // Verifica Password
+        function submitPassword() {
+            const input = document.getElementById('admin-password-input');
+            const error = document.getElementById('password-error');
+            
+            if (input.value === "0000") {
+                isAdmin = true;
+                document.getElementById('admin-panel').style.display = 'block';
+                forceClosePasswordModal();
+                renderGallery();
+            } else {
+                error.style.display = 'block';
+                input.value = '';
+                input.focus();
+            }
+        }
+
+        // Gestione Nome File caricato
+        document.getElementById('image-upload').addEventListener('change', function(e) {
+            const fileName = e.target.files[0] ? e.target.files[0].name : "Nessun file selezionato";
+            document.getElementById('file-name-display').textContent = fileName;
+        });
+
+        // Aggiunta nuova immagine (base64)
+        function addNewImage() {
+            const fileInput = document.getElementById('image-upload');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                alert("Per favore, seleziona un'immagine da caricare.");
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const images = getGalleryImages();
+                images.push(e.target.result);
+                localStorage.setItem('stefio_gallery', JSON.stringify(images));
+                renderGallery();
+                
+                fileInput.value = '';
+                document.getElementById('file-name-display').textContent = "Nessun file selezionato";
+            };
+
+            reader.readAsDataURL(file);
+        }
+
+        // Eliminazione Immagine
+        function deleteImage(index) {
+            if (confirm("Sei sicuro di voler eliminare questa foto dalla galleria?")) {
+                const images = getGalleryImages();
+                images.splice(index, 1);
+                localStorage.setItem('stefio_gallery', JSON.stringify(images));
+                renderGallery();
+            }
+        }
+
+        // Lightbox Ingrandimento Foto Galleria
+        function openLightbox(src) {
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            const lightboxEmail = document.getElementById('lightbox-email');
+            
+            lightboxImg.src = src;
+            lightboxEmail.style.display = 'none'; // Nasconde l'email per le foto normali
+            lightbox.style.display = 'flex';
+        }
+
+        // Lightbox Specifico per Ingrandimento Logo
+        function openLogoLightbox(src) {
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            const lightboxEmail = document.getElementById('lightbox-email');
+            
+            lightboxImg.src = src;
+            lightboxEmail.style.display = 'block'; // Mostra l'email stilizzata sotto il logo
+            lightbox.style.display = 'flex';
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').style.display = 'none';
+        }
+
+        // Modale Ingrandimento Email
+        function openEmailModal() {
+            document.getElementById('email-modal').style.display = 'flex';
+        }
+
+        function closeEmailModal(event) {
+            if (event.target.id === 'email-modal') {
+                document.getElementById('email-modal').style.display = 'none';
+            }
+        }
+
+        function forceCloseEmailModal() {
+            document.getElementById('email-modal').style.display = 'none';
+        }
+
+        // Caricamento Iniziale
+        window.onload = renderGallery;
+    </script>
+</body>
+</html>
